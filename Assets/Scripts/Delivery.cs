@@ -9,15 +9,21 @@ public class Delivery : MonoBehaviour
     [SerializeField] float packageDestroyDelay = 0.5f;
     bool hasPackage;
     SpriteRenderer spriteRenderer;
+    Driver driver;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        driver = gameObject.GetComponent<Driver>();
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log("Collide!");
+        if (other.gameObject.tag == "WorldObstacle")
+        {
+            Debug.Log("Car slowing as obstacle hit");
+            driver.moveSpeed = driver.slowSpeed;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -34,6 +40,11 @@ public class Delivery : MonoBehaviour
             Debug.Log("Package delivered");
             hasPackage = false;
             spriteRenderer.color = noPackageColour;
+        }
+        else if (other.tag == "Boost")
+        {
+            Debug.Log("Speed boost!");
+            driver.moveSpeed = driver.boostSpeed;
         }
     }
 }
